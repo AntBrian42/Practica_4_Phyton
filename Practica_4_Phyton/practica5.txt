@@ -1,0 +1,8 @@
+Fecha : 11/10/2026 22:48
+Nombre : Brian
+Apellidos : Aguilar
+Edad : 12
+Telefono : 1234567891
+Estatura : 1.77 m
+Genero : Masculino
+

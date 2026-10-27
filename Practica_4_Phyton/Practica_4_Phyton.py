@@ -1,85 +1,92 @@
-### Formulario de registro almacenamiento en TXT sin validación
 import tkinter as tk
 from tkinter import messagebox
-import os
+import re
 
-### Definición de funciones
-def limpiar_campos():
+def EnteroValido(valor):
+    try:
+        int(valor)
+        return True
+    except ValueError:
+        messagebox.showerror("Error Edad","Valor de edad equivocado")
+        return False
+def DecimalValido(valor):
+    try:
+        float(valor)
+        return True
+    except ValueError:
+
+        return False
+
+def TelefonoValido(valor):
+    return valor.isdigit() and len(valor)==10
+def TextoValido(valor):
+    return bool(re.match("^[a-zA-Z\\s]+$", valor))
+
+
+def borrar():
     tbNombre.delete(0,tk.END)
     tbApellidos.delete(0,tk.END)
     tbEdad.delete(0,tk.END)
-    tbEstatura.delete(0,tk.END)
     tbTelefono.delete(0,tk.END)
-    var_genero.set(0)
-
-def borrar_fun():
-    limpiar_campos()
-
-def guardar_valores():
-    #Obtener valores desde los entrys
-    nombres= tbNombre.get()
+    tbEstatura.delete(0,tk.END)
+    rbSeleccionGenero.set(0)
+def guardar():
+    nombres =  tbNombre.get()
     apellidos = tbApellidos.get()
     edad = tbEdad.get()
+    tel = tbTelefono.get()
     estatura = tbEstatura.get()
-    telefono= tbTelefono.get()
-    ### Obtener el genero de los RadioButtons
     genero = ""
-    if var_genero.get()==1:
-        genero= "Hombre"
-    elif var_genero.get()==2:
-        genero="Mujer"
+    if rbSeleccionGenero.get()==1:
+        genero="Masculino"
+    elif rbSeleccionGenero.get()==2:
+        genero="Femenino"
+    elif rbSeleccionGenero.get()==3:
+        genero="No Definido"
+    if(EnteroValido(edad) and DecimalValido(estatura)and
+       TelefonoValido(tel)and TextoValido(nombres) and
+       TextoValido(apellidos)):
+        datos = "Nombre : "+ nombres+"\n"+"Apellidos : "+ apellidos+"\n"+"Edad : "+ edad+"\n"+"Telefono : "+ tel+"\n"+"Estatura : "+ estatura+"\n"+"Genero : "+ genero
+        with open("C:\\Users\\brian\\OneDrive\\Módulo\\practica5.txt","a") as archivo:
+            archivo.write(datos+"\n\n")
+        messagebox.showinfo("Informacion","Datos guardados correctamente \n"+datos)
+    else:
+        messagebox.showerror("Error","Algunos de los campos tienen formato equivocado")
 
-    mensaje = f"Nombres: {nombres}\nApellidos: {apellidos}\nTelefono: {telefono}\nEdad: {edad}\nEstatura: {estatura}"
-    messagebox.showinfo("Registro de Usuario", mensaje)
 
-    ## Ruta del almacenamiento de nuestro documento
-    rutaFile = "C:\\Users\\brian\\OneDrive\\Documentos\\Practica.txt"
-    ## Valor booleano de verificacion del archivo existente
-    archivoExistente = os.path.exists(rutaFile)
 
-    with open(rutaFile, "a") as escritor:
-        if archivoExistente:
-            escritor.write("\n")
-        escritor.write(mensaje + "\n")
-
-## Creación de Vetana
 ventana = tk.Tk()
-ventana.geometry("520x500")
-ventana.title("Formulario Vr.01")
-#Crear variable para el RadioButton
-var_genero = tk.IntVar()
-
-## Creación de etiquetas y campos de entrada
-lbNombre= tk.Label(ventana, text="Nombres :")
-lbNombre.pack()
-tbNombre = tk.Entry(ventana)
+ventana.configure(bg="red")
+ventana.geometry("340x550")
+ventana.title("Actividad 05 - Formulario de Registro Vr. 002")
+rbSeleccionGenero = tk.IntVar()
+tk.Label(ventana, text="Nombre : ", font =("Segoe UI",14,"bold")).pack(padx=10, pady=8)
+tbNombre = tk.Entry(ventana, width=35,justify="center")
 tbNombre.pack()
-lbApellidos= tk.Label(ventana, text="Apellidos :")
-lbApellidos.pack()
-tbApellidos = tk.Entry(ventana)
+tk.Label(ventana, text="Apellidos : " , font=("Segoe UI",14,"bold")).pack(padx=10, pady=8)
+tbApellidos = tk.Entry(ventana, width=35,justify="center")
 tbApellidos.pack()
-lbTelefono= tk.Label(ventana, text="Telefono :")
-lbTelefono.pack()
-tbTelefono = tk.Entry(ventana)
-tbTelefono.pack()
-lbEdad= tk.Label(ventana, text="Edad :")
-lbEdad.pack()
-tbEdad = tk.Entry(ventana)
+tk.Label(ventana, text="Edad : " , font=("Segoe UI",14,"bold")).pack(padx=10, pady=8)
+tbEdad = tk.Entry(ventana, width=10,justify="center")
 tbEdad.pack()
-lbEstatura= tk.Label(ventana, text="Estatura :")
-lbEstatura.pack()
-tbEstatura = tk.Entry(ventana)
+tk.Label(ventana, text="Estatura : " , font=("Segoe UI",14,"bold")).pack(padx=10, pady=8)
+tbEstatura = tk.Entry(ventana, width=15,justify="center")
 tbEstatura.pack()
-lbGenero=tk.Label(ventana, text="Genero")
-lbGenero.pack()
-rbHombre=tk.Radiobutton(ventana, text="Hombre", variable=var_genero, value=1)
-rbHombre.pack()
-rbMujer=tk.Radiobutton(ventana, text="Mujer", variable=var_genero, value=2)
-rbMujer.pack()
-##Creación de Botones
-btnBorrar = tk.Button(ventana, text = "Borrar valores", command=borrar_fun)
-btnBorrar.pack()
-btnGuardar = tk.Button(ventana, text = "Guardar", command=guardar_valores)
-btnGuardar.pack()
-## Ejecución de ventana
+tk.Label(ventana, text="Telefono : " , font=("Segoe UI",14,"bold")).pack(padx=10, pady=8)
+tbTelefono = tk.Entry(ventana, width=15,justify="center")
+tbTelefono.pack()
+gb = tk.LabelFrame(ventana, text="Selecione un Genero : ", padx=10, pady=8)
+gb.pack(padx=10, pady=8)
+rbMasculino = tk.Radiobutton(gb, text="Masculino", value=1,variable=rbSeleccionGenero)
+rbMasculino.grid(column=1,row=1)
+rbFemenino = tk.Radiobutton(gb, text="Femenino", value=2,variable=rbSeleccionGenero)
+rbFemenino.grid(column=2,row=1)
+rbNoDefinido = tk.Radiobutton(gb, text="No Definido", value=3,variable=rbSeleccionGenero)
+rbNoDefinido.grid(column=3,row=1)
+gb2 = tk.LabelFrame(ventana, text="")
+gb2.pack(padx=10, pady=8)
+btnBorrar = tk.Button(gb2, text="Borrar", width=10 , padx=10, pady=8, command=borrar)
+btnBorrar.grid(column=2, row=1)
+btnGuardar = tk.Button(gb2, text="Guardar", width=10,padx=10, pady=8, command= guardar)
+btnGuardar.grid(column=1, row=1)
 ventana.mainloop()
